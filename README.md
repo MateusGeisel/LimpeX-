@@ -1,17 +1,29 @@
-# limpex1
+# LimpeX
 
-A new Flutter project.
+Cross-platform application for connecting customers with home
+service providers.
 
-## Getting Started
+## About
 
-This project is a starting point for a Flutter application.
+LimpeX is a university project developed as a Final Course Project (TCC),
+focused on facilitating the search, hiring and management of home services.
 
-A few resources to get you started if this is your first Flutter project:
+## Technologies
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+- Flutter
+- Dart
+- PostgreSQL
+- REST API
+- Git/GitHub
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Architecture
+
+The application follows an architecture based on:
+
+- MVVM
+- Services
+- Repositories
+
+## Status
+
+🚧 Under development
