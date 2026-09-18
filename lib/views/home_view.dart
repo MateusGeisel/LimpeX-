@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import 'login_view.dart';
+import 'add_address_view.dart'; // Import da tela de cadastro de endereço
 
 class HomeView extends StatelessWidget {
   final UserModel user;
@@ -121,6 +122,22 @@ class HomeView extends StatelessWidget {
           },
           icon: const Icon(Icons.add),
           label: const Text('Solicitar Nova Limpeza', style: TextStyle(fontSize: 16)),
+        ),
+        const SizedBox(height: 12),
+        // Botão para cadastrar endereço
+        OutlinedButton.icon(
+          style: OutlinedButton.styleFrom(
+            minimumSize: const Size(double.infinity, 50),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AddAddressView()),
+            );
+          },
+          icon: const Icon(Icons.location_on_outlined),
+          label: const Text('Cadastrar Novo Endereço', style: TextStyle(fontSize: 16)),
         ),
         const SizedBox(height: 24),
         const Text(
