@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import 'register_view.dart';
+import 'home_view.dart'; // Import da HomeView
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -26,7 +27,16 @@ class _LoginViewState extends State<LoginView> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Bem-vindo, ${_authViewModel.currentUser?.nome}!')),
       );
-      // Próximo passo: Navegar para a HomeView
+
+      // Redireciona para a HomeView passando o utilizador logado
+      if (_authViewModel.currentUser != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeView(user: _authViewModel.currentUser!),
+          ),
+        );
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -40,7 +50,7 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Limpex - Login')),
+      appBar: AppBar(title: const Text('LimpeX - Login')),
       body: AnimatedBuilder(
         animation: _authViewModel,
         builder: (context, _) {
@@ -64,18 +74,18 @@ class _LoginViewState extends State<LoginView> {
                 _authViewModel.isLoading
                     ? const CircularProgressIndicator()
                     : ElevatedButton(
-  onPressed: _fazerLogin,
-  child: const Text('Entrar'),
-),
-TextButton(
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const RegisterView()),
-    );
-  },
-  child: const Text('Não tem uma conta? Cadastre-se'),
-),
+                        onPressed: _fazerLogin,
+                        child: const Text('Entrar'),
+                      ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const RegisterView()),
+                    );
+                  },
+                  child: const Text('Não tem uma conta? Cadastre-se'),
+                ),
               ],
             ),
           );

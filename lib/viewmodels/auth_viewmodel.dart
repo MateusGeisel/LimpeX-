@@ -15,6 +15,23 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Verifica se já existe um token salvo ao abrir o app
+  Future<bool> checkAutoLogin() async {
+    _setLoading(true);
+    final savedToken = await _authService.getToken();
+    final savedUser = await _authService.getUser();
+
+    if (savedToken != null && savedUser != null) {
+      token = savedToken;
+      currentUser = savedUser;
+      _setLoading(false);
+      return true; // Usuário já está logado
+    }
+
+    _setLoading(false);
+    return false; // Precisa fazer login
+  }
+
   Future<bool> register({
     required String nome,
     required String email,
@@ -64,5 +81,12 @@ class AuthViewModel extends ChangeNotifier {
       notifyListeners();
       return false;
     }
+  }
+
+  Future<void> logout() async {
+    await _authService.clearSession();
+    currentUser = null;
+    token = null;
+    notifyListeners();
   }
 }
