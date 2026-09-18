@@ -15,7 +15,14 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> register(String nome, String email, String senha, String? telefone) async {
+  Future<bool> register({
+    required String nome,
+    required String email,
+    required String senha,
+    String? cpf,
+    String? telefone,
+    String tipoPerfil = 'CLIENTE',
+  }) async {
     _setLoading(true);
     errorMessage = null;
 
@@ -23,7 +30,9 @@ class AuthViewModel extends ChangeNotifier {
       nome: nome,
       email: email,
       senha: senha,
+      cpf: cpf,
       telefone: telefone,
+      tipoPerfil: tipoPerfil,
     );
 
     _setLoading(false);

@@ -3,17 +3,15 @@ import 'package:http/http.dart' as http;
 import '../models/user_model.dart';
 
 class AuthService {
-  // Ajuste a URL conforme onde está rodando seu app:
-  // Emulador Android: 'http://10.0.2.2:3000/auth'
-  // Flutter Web ou iOS Simulator: 'http://localhost:3000/auth'
   static const String baseUrl = 'http://localhost:3000/auth';
 
-  // Método de Cadastro
   Future<Map<String, dynamic>> register({
     required String nome,
     required String email,
     required String senha,
+    String? cpf,
     String? telefone,
+    String tipoPerfil = 'CLIENTE',
   }) async {
     final response = await http.post(
       Uri.parse('$baseUrl/register'),
@@ -22,7 +20,9 @@ class AuthService {
         'nome': nome,
         'email': email,
         'senha': senha,
+        'cpf': cpf,
         'telefone': telefone,
+        'tipo_perfil': tipoPerfil,
       }),
     );
 
@@ -35,7 +35,6 @@ class AuthService {
     }
   }
 
-  // Método de Login
   Future<Map<String, dynamic>> login({
     required String email,
     required String senha,
