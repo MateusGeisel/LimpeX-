@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import 'login_view.dart';
-import 'add_address_view.dart'; // Import da tela de cadastro de endereço
+import 'add_address_view.dart';
+import 'prestador_formalizacao_view.dart';
+import 'trilha_mei_view.dart'; // Import da Trilha MEI
 
 class HomeView extends StatelessWidget {
   final UserModel user;
@@ -124,7 +126,6 @@ class HomeView extends StatelessWidget {
           label: const Text('Solicitar Nova Limpeza', style: TextStyle(fontSize: 16)),
         ),
         const SizedBox(height: 12),
-        // Botão para cadastrar endereço
         OutlinedButton.icon(
           style: OutlinedButton.styleFrom(
             minimumSize: const Size(double.infinity, 50),
@@ -161,6 +162,40 @@ class HomeView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Botão de Formalização MEI / CNPJ
+        ElevatedButton.icon(
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size(double.infinity, 50),
+            backgroundColor: Colors.orange,
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const PrestadorFormalizacaoView()),
+            );
+          },
+          icon: const Icon(Icons.verified),
+          label: const Text('Cadastrar CNPJ / Formalização MEI', style: TextStyle(fontSize: 16)),
+        ),
+        const SizedBox(height: 12),
+        // Botão do Simulador e Trilha MEI
+        OutlinedButton.icon(
+          style: OutlinedButton.styleFrom(
+            minimumSize: const Size(double.infinity, 50),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const TrilhaMeiView()),
+            );
+          },
+          icon: const Icon(Icons.school_outlined),
+          label: const Text('Conhecer Vantagens & Simulador MEI', style: TextStyle(fontSize: 16)),
+        ),
+        const SizedBox(height: 24),
         const Text(
           'Serviços Disponíveis na Região',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
