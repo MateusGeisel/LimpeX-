@@ -1,15 +1,43 @@
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import '../viewmodels/auth_viewmodel.dart';
+import '../services/solicitacao_service.dart';
 import 'login_view.dart';
 import 'add_address_view.dart';
 import 'prestador_formalizacao_view.dart';
-import 'trilha_mei_view.dart'; // Import da Trilha MEI
+import 'trilha_mei_view.dart';
+import 'criar_solicitacao_view.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   final UserModel user;
 
   const HomeView({Key? key, required this.user}) : super(key: key);
+
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  final SolicitacaoService _solicitacaoService = SolicitacaoService();
+  List<dynamic> _solicitacoes = [];
+  bool _carregandoSolicitacoes = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.user.tipoPerfil != 'PRESTADOR') {
+      _carregarSolicitacoes();
+    }
+  }
+
+  Future<void> _carregarSolicitacoes() async {
+    setState(() => _carregandoSolicitacoes = true);
+    final lista = await _solicitacaoService.buscarMinhasSolicitacoes();
+    setState(() {
+      _solicitacoes = lista;
+      _carregandoSolicitacoes = false;
+    });
+  }
 
   void _fazerLogout(BuildContext context) async {
     final authViewModel = AuthViewModel();
@@ -25,7 +53,7 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isPrestador = user.tipoPerfil == 'PRESTADOR';
+    final bool isPrestador = widget.user.tipoPerfil == 'PRESTADOR';
 
     return Scaffold(
       appBar: AppBar(
@@ -66,7 +94,7 @@ class HomeView extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Olá, ${user.nome}!',
+                            'Olá, ${widget.user.nome}!',
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -117,10 +145,14 @@ class HomeView extends StatelessWidget {
             foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
-          onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Módulo de solicitação em breve!')),
+          onPressed: () async {
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const CriarSolicitacaoView()),
             );
+            if (result == true) {
+              _carregarSolicitacoes();
+            }
           },
           icon: const Icon(Icons.add),
           label: const Text('Solicitar Nova Limpeza', style: TextStyle(fontSize: 16)),
@@ -146,13 +178,36 @@ class HomeView extends StatelessWidget {
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
-        const Card(
-          child: ListTile(
-            leading: Icon(Icons.history, color: Colors.blue),
-            title: Text('Nenhuma limpeza solicitada ainda.'),
-            subtitle: Text('Toque no botão acima para criar seu primeiro pedido.'),
+        if (_carregandoSolicitacoes)
+          const Center(child: CircularProgressIndicator())
+        else if (_solicitacoes.isEmpty)
+          const Card(
+            child: ListTile(
+              leading: Icon(Icons.history, color: Colors.blue),
+              title: Text('Nenhuma limpeza solicitada ainda.'),
+              subtitle: Text('Toque no botão acima para criar seu primeiro pedido.'),
+            ),
+          )
+        else
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: _solicitacoes.length,
+            itemBuilder: (context, index) {
+              final item = _solicitacoes[index];
+              return Card(
+                margin: const EdgeInsets.only(bottom: 8.0),
+                child: ListTile(
+                  leading: const Icon(Icons.cleaning_services, color: Colors.blue),
+                  title: Text(item['nome_categoria'] ?? 'Limpeza'),
+                  subtitle: Text(
+                    'Data: ${item['data_agendamento']} - Status: ${item['status']}',
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                ),
+              );
+            },
           ),
-        ),
       ],
     );
   }
